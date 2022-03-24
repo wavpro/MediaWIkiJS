@@ -1,4 +1,4 @@
-//Version 0.10
+//Version 0.10.1
 
 class Client {
   constructor(baseURL = "https://corsproxy.albinhedwall.repl.co/jojowiki.com/api.php") {
@@ -82,7 +82,7 @@ class Client {
       if (method == "GET" && (typeof args).toLowerCase() == 'object') {
         for (let key in args) {
           let value = args[key];
-          result += `&${key}=${value}`;
+          result += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
         }
       }
       if (result.startsWith("&")) {
