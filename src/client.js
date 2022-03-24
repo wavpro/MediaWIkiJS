@@ -1,4 +1,8 @@
-//Version 0.10.1
+//Version 0.10.2
+
+if (fetch == undefined) {
+  this.fetch = require('node-fetch');
+}
 
 class Client {
   constructor(baseURL = "https://corsproxy.albinhedwall.repl.co/jojowiki.com/api.php") {
