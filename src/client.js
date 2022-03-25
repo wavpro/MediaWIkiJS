@@ -1,4 +1,4 @@
-//Version 0.10.2
+//Version 0.12
 
 if (fetch == undefined) {
   this.fetch = require('node-fetch');
@@ -7,6 +7,18 @@ if (fetch == undefined) {
 class Client {
   constructor(baseURL = "https://corsproxy.albinhedwall.repl.co/jojowiki.com/api.php") {
     this.baseURL = baseURL;
+  }
+  getRandomPages(limit) {
+    const _this = this;
+    return new Promise(async (resolve, reject) => {
+      const args = _this._util.getDefaultArgs("GET");
+      args.list = 'random';
+      args.action = 'query';
+      args.rnlimit = limit;
+      const response = JSON.parse(await _this._get(args));
+      response.query.search = _this._util.rawPageArrayTo(response.query.random, _this)
+      resolve(response);
+    })
   }
   search(term) {
     const _this = this;
@@ -42,19 +54,21 @@ class Client {
     })
   }
   getPageText(pageTitle, format) {
-    const _this = this;
-    return new Promise(async (resolve, reject) => {
-      const args = _this._util.getDefaultArgs("GET");
-      args.action = 'parse';
-      args.formatversion = 2;
-      if (format.toLowerCase() == "html") {
-        args.prop = 'text';
-      }
-      args.page = pageTitle;
-      const response = JSON.parse(await _this._get(args));
-      resolve(response.parse);
-    })
-  }
+      const _this = this;
+      return new Promise(async (resolve, reject) => {
+        const args = _this._util.getDefaultArgs("GET");
+        args.action = 'parse';
+        args.formatversion = 2;
+        if (format.toLowerCase() == "html") {
+          args.prop = 'text';
+        } else if (format.toLowerCase() == "wikitext") {
+          args.prop = 'wikitext';
+        }
+        args.page = pageTitle;
+        const response = JSON.parse(await _this._get(args));
+        resolve(response.parse);
+      })
+    }
   getPageCategories(pageTitle, pageID) {
     const _this = this;
     return new Promise(async (resolve, reject) => {
